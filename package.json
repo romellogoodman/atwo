@@ -4,8 +4,8 @@
   "description": "cli + ide.",
   "scripts": {
     "dev": "rollup -c -w",
-    "site": "next",
-    "build": "next build",
+    "site": "eleventy --input=pages --formats=11ty.js,md --serve --port=3000",
+    "build": "eleventy --input=pages --formats=11ty.js,md",
     "build:cli": "rollup -c",
     "prepack": "npm run build:cli"
   },
@@ -13,10 +13,10 @@
     "atwo": "./dist/cli.js"
   },
   "dependencies": {
-    "commander": "^9.3.0",
-    "next": "^12.1.6"
+    "commander": "^9.3.0"
   },
   "devDependencies": {
+    "@11ty/eleventy": "^1.0.1",
     "@rollup/plugin-json": "^4.1.0",
     "rollup": "^2.75.4",
     "rollup-plugin-preserve-shebang": "^1.0.1"
