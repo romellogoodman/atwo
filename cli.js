@@ -16,4 +16,4 @@ const options = program.opts();
 const sketchPath = program.args[0];
 const fullSketchPath = path.join(__dirname, sketchPath);
 
-console.log("atwo:", fullSketchPath, options);
+console.log("atwo.", fullSketchPath, options);
