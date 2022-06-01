@@ -1,0 +1,19 @@
+{
+  "name": "atwo",
+  "version": "0.1.0",
+  "description": "cli + ide.",
+  "scripts": {
+    "dev": "rollup -c -w"
+  },
+  "bin": {
+    "atwo": "./dist/cli.js"
+  },
+  "dependencies": {
+    "commander": "^9.3.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-json": "^4.1.0",
+    "rollup": "^2.75.4",
+    "rollup-plugin-preserve-shebang": "^1.0.1"
+  }
+}
