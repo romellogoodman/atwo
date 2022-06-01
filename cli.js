@@ -1,7 +1,8 @@
-#!/usr/bin/env node
-import { program } from "commander";
+import * as commander from "commander";
 import path from "path";
 import pkg from "./package.json";
+
+const { program } = commander;
 
 program
   .name(pkg.name)

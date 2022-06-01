@@ -17,9 +17,10 @@
   },
   "devDependencies": {
     "@11ty/eleventy": "^1.0.1",
+    "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-json": "^4.1.0",
-    "rollup": "^2.75.4",
-    "rollup-plugin-preserve-shebang": "^1.0.1"
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "rollup": "^2.75.4"
   },
   "author": "Romello Goodman",
   "license": "MIT",
