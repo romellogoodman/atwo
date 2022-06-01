@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-const { program } = require("commander");
-const path = require("path");
-const pkg = require("./package.json");
+import { program } from "commander";
+import path from "path";
+import pkg from "./package.json";
 
 program
   .name(pkg.name)
@@ -14,6 +14,6 @@ program.parse();
 
 const options = program.opts();
 const sketchPath = program.args[0];
-const fullSketchPath = path.join(__dirname, sketchPath);
+const fullSketchPath = path.join(process.cwd(), sketchPath);
 
 console.log("atwo.", fullSketchPath, options);

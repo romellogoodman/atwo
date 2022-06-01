@@ -7,5 +7,5 @@ export default {
     dir: "dist",
     format: "umd",
   },
-  plugins: [json(), shebang()],
+  plugins: [shebang(), json()],
 };
