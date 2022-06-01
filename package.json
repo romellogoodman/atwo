@@ -20,5 +20,11 @@
     "@rollup/plugin-json": "^4.1.0",
     "rollup": "^2.75.4",
     "rollup-plugin-preserve-shebang": "^1.0.1"
+  },
+  "author": "Romello Goodman",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/romellogoodman/atwo.git"
   }
 }
