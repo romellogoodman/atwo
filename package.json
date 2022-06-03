@@ -1,6 +1,6 @@
 {
   "name": "atwo",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "cli + ide.",
   "scripts": {
     "dev": "rollup -c -w",
