@@ -1,5 +1,7 @@
 # atwo
 
+[![npm version](https://badge.fury.io/js/atwo.svg)](https://badge.fury.io/js/atwo)
+
 cli + ide. for creating with code.
 
 ```
