@@ -17,13 +17,13 @@ program
 
 program.command("dev").argument("<path>", "path to the sketch").action(devCMD);
 
-program
-  .command("gallery")
-  .option(
-    "-f, --filter <type>",
-    `type of file to filter: ${FILE_TYPES.join(",")}`
-  )
-  .action(galleryCMD);
+// program
+//   .command("gallery")
+//   .option(
+//     "-f, --filter <type>",
+//     `type of file to filter: ${FILE_TYPES.join(",")}`
+//   )
+//   .action(galleryCMD);
 
 program
   .command("ls")
@@ -39,10 +39,10 @@ program
   .option("-t, --type <type>", "type of file to create", DEFAULT_FILETYPE)
   .action(newCMD);
 
-program
-  .command("render")
-  .argument("<path>", "path to the sketch")
-  .option("-n, --number <number>", "render $number of outputs", "8")
-  .action(renderCMD);
+// program
+//   .command("render")
+//   .argument("<path>", "path to the sketch")
+//   .option("-n, --number <number>", "render $number of outputs", "8")
+//   .action(renderCMD);
 
 program.parse();
