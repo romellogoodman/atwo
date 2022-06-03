@@ -10,7 +10,10 @@ import pkg from "../package.json";
 
 const { program } = commander;
 
-program.name(pkg.name).description(pkg.description).version(pkg.version);
+program
+  .name(pkg.name)
+  .description(pkg.description)
+  .version(pkg.version, "-v, --version", "output the current version");
 
 program.command("dev").argument("<path>", "path to the sketch").action(devCMD);
 
