@@ -3,10 +3,10 @@ import json from "@rollup/plugin-json";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 
 export default {
-  input: "cli.js",
+  input: "cli/index.js",
   output: {
     banner: "#!/usr/bin/env node",
-    dir: "dist",
+    file: "dist/cli.js",
     format: "umd",
   },
   plugins: [nodeResolve(), commonjs(), json()],

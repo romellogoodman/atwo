@@ -13,6 +13,8 @@
     "atwo": "./dist/cli.js"
   },
   "dependencies": {
+    "chalk": "^5.0.1",
+    "cli-columns": "^4.0.0",
     "commander": "^9.3.0"
   },
   "devDependencies": {
