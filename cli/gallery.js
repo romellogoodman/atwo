@@ -1,5 +1,5 @@
-const command = () => {
-  console.log("gallery");
+const command = (options) => {
+  console.log("gallery", options);
 };
 
 export default command;
