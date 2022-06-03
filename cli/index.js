@@ -5,7 +5,7 @@ import galleryCMD from "./gallery";
 import lsCMD from "./ls";
 import newCMD from "./new";
 import renderCMD from "./render";
-import { FILE_TYPES } from "./utils";
+import { DEFAULT_FILETYPE, FILE_TYPES } from "./utils";
 import pkg from "../package.json";
 
 const { program } = commander;
@@ -35,7 +35,8 @@ program
 
 program
   .command("new")
-  .option("-t, --type <type>", "type of file to create", FILE_TYPES[0])
+  .argument("<name>", "name of the sketch")
+  .option("-t, --type <type>", "type of file to create", DEFAULT_FILETYPE)
   .action(newCMD);
 
 program
