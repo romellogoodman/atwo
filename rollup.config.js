@@ -7,7 +7,7 @@ export default {
   output: {
     banner: "#!/usr/bin/env node",
     file: "dist/cli.js",
-    format: "umd",
+    format: "cjs",
   },
   plugins: [nodeResolve(), commonjs(), json()],
 };
