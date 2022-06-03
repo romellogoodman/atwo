@@ -7,8 +7,7 @@
     "site": "eleventy --input=pages --formats=11ty.js,md --serve --port=3000",
     "build": "eleventy --input=pages --formats=11ty.js,md",
     "build:cli": "rollup -c",
-    "build:readme": "cp cli/README.md dist",
-    "prepack": "npm run build:cli && npm run build:readme"
+    "prepack": "npm run build:cli"
   },
   "bin": {
     "atwo": "./dist/cli.js"
