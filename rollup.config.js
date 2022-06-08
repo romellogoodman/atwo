@@ -9,5 +9,12 @@ export default {
     file: "dist/cli.js",
     format: "cjs",
   },
-  plugins: [nodeResolve(), commonjs(), json()],
+  plugins: [
+    nodeResolve({
+      // Needed because of express
+      preferBuiltins: true,
+    }),
+    commonjs(),
+    json(),
+  ],
 };

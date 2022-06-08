@@ -15,7 +15,16 @@ program
   .description(pkg.description)
   .version(pkg.version, "-v, --version", "output the current version");
 
-program.command("dev").argument("<path>", "path to the sketch").action(devCMD);
+program
+  .command("dev")
+  .argument("<name>", "name of the sketch")
+  .option(
+    "-p, --port <port>",
+    "port number on which to start the server",
+    "3000"
+  )
+  .option("-o, --open", "open the browser once the server is started")
+  .action(devCMD);
 
 // program
 //   .command("gallery")
@@ -41,7 +50,7 @@ program
 
 // program
 //   .command("render")
-//   .argument("<path>", "path to the sketch")
+//   .argument("<name>", "name of the sketch")
 //   .option("-n, --number <number>", "render $number of outputs", "8")
 //   .action(renderCMD);
 

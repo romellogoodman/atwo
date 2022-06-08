@@ -1,5 +1,5 @@
-const command = (path, options) => {
-  console.log("render", path, options);
+const command = (name, options) => {
+  console.log("render", name, options);
 };
 
 export default command;
