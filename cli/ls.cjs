@@ -1,7 +1,9 @@
-import columns from "cli-columns";
-import fs from "fs";
+const columns = require("cli-columns");
+const fs = require("fs");
 
-import { FILE_TYPES } from "./utils";
+const utils = require("./utils.cjs");
+
+const { FILE_TYPES } = utils;
 
 const command = (options) => {
   let files = fs.readdirSync(process.cwd());
@@ -17,4 +19,4 @@ const command = (options) => {
   console.log(columns(files));
 };
 
-export default command;
+module.exports = command;

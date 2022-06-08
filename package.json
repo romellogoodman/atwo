@@ -3,30 +3,32 @@
   "version": "0.1.4",
   "description": "cli + ide.",
   "scripts": {
-    "dev": "rollup -c -w",
-    "site": "eleventy --input=site --formats=11ty.js,md --serve --port=3000",
-    "build": "eleventy --input=site --formats=11ty.js,md",
-    "build:cli": "rollup -c",
-    "prepack": "npm run build:cli"
+    "dev": "eleventy --input=site --formats=11ty.js,md --serve --port=3000",
+    "build": "eleventy --input=site --formats=11ty.js,md"
   },
   "bin": {
-    "atwo": "./dist/cli.js"
+    "atwo": "./cli/index.cjs"
   },
   "dependencies": {
-    "@babel/core": "^7.18.2",
+    "@babel/plugin-transform-runtime": "^7.18.2",
+    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-react": "^7.17.12",
+    "babel-loader": "^8.2.5",
     "chalk": "^5.0.1",
     "cli-columns": "^4.0.0",
     "commander": "^9.3.0",
+    "connect-history-api-fallback": "^1.6.0",
     "express": "^4.18.1",
-    "node-watch": "^0.7.3",
-    "socket.io": "^4.5.1"
+    "html-webpack-plugin": "^5.5.0",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-hot-loader": "^4.13.0",
+    "webpack": "^5.73.0",
+    "webpack-dev-middleware": "^5.3.3",
+    "webpack-hot-middleware": "^2.25.1"
   },
   "devDependencies": {
-    "@11ty/eleventy": "^1.0.1",
-    "@rollup/plugin-commonjs": "^22.0.0",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.3.0",
-    "rollup": "^2.75.4"
+    "@11ty/eleventy": "^1.0.1"
   },
   "author": "Romello Goodman",
   "license": "MIT",
@@ -35,6 +37,6 @@
     "url": "https://github.com/romellogoodman/atwo.git"
   },
   "files": [
-    "dist"
+    "cli"
   ]
 }

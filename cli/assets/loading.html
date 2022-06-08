@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>atwo</title>
+  <link rel="icon" href="./favicon.svg" type="image/png" />
+</head>
+
+<body>
+  <p>loading atwo...</p>
+  <script>
+    let ready = false;
+
+    function onReady() {
+      ready = true;
+      location.reload(true);
+    }
+
+    function checkAndSetStatus() {
+      let cancelled = false;
+      fetch("/", { headers: { Accept: "application/json" } })
+        .then(result => result.json())
+        .catch(error => {
+          // We can get back an error "Cannot parse JSON" when a HTML
+          // response is returned, so we assume the server is ready
+          onReady();
+        })
+        .then(({ loading, status } = {}) => {
+          if (!loading) {
+            onReady();
+            return;
+          }
+          if (cancelled) {
+            return;
+          }
+        });
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    let cancelLastCall = checkAndSetStatus();
+    const interval = setInterval(() => {
+      cancelLastCall();
+      if (ready) {
+        clearInterval(interval);
+        return;
+      }
+      cancelLastCall = checkAndSetStatus();
+    }, 500);
+  </script>
+</body>
+
+</html>

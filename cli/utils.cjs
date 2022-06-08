@@ -28,16 +28,23 @@ const fileTypes = {
   },
 };
 
-export const FILE_TYPES = Object.keys(fileTypes);
-export const DEFAULT_FILETYPE = "p5";
+const FILE_TYPES = Object.keys(fileTypes);
+const DEFAULT_FILETYPE = "p5";
 
-export const extractFileType = (name) => {
+const extractFileType = (name) => {
   // filename.type.ext, i.e hello.p5.js
   const splitName = name.split(".");
 
   return splitName[1];
 };
 
-export const getFileType = (type) => {
+const getFileType = (type) => {
   return fileTypes[type] || fileTypes[DEFAULT_FILETYPE];
+};
+
+module.exports = {
+  FILE_TYPES,
+  DEFAULT_FILETYPE,
+  extractFileType,
+  getFileType,
 };

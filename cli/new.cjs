@@ -1,6 +1,9 @@
-import fs from "fs";
-import path from "path";
-import { getFileType } from "./utils";
+const fs = require("fs");
+const path = require("path");
+
+const utils = require("./utils.cjs");
+
+const { FILE_TYPES } = utils;
 
 const command = (name, options) => {
   const { extension, template } = getFileType(options.type);
@@ -12,4 +15,4 @@ const command = (name, options) => {
   console.log(`created: ${fileName}`);
 };
 
-export default command;
+module.exports = command;

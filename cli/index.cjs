@@ -1,12 +1,13 @@
-import * as commander from "commander";
+#!/usr/bin/env node
+const commander = require("commander");
 
-import devCMD from "./dev";
-import galleryCMD from "./gallery";
-import lsCMD from "./ls";
-import newCMD from "./new";
-import renderCMD from "./render";
-import { DEFAULT_FILETYPE, FILE_TYPES } from "./utils";
-import pkg from "../package.json";
+const devCMD = require("./dev.cjs");
+const galleryCMD = require("./gallery.cjs");
+const lsCMD = require("./ls.cjs");
+const newCMD = require("./new.cjs");
+const renderCMD = require("./render.cjs");
+const { DEFAULT_FILETYPE, FILE_TYPES } = require("./utils.cjs");
+const pkg = require("../package.json");
 
 const { program } = commander;
 
