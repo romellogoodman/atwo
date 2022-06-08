@@ -28,42 +28,19 @@ function statusMiddleware(req, res, next) {
   }
 }
 
-const command = async (name, options) => {
-  const port = options.port || 3000;
-  const filePath = path.join(process.cwd(), name);
-  const [namePrefix, fileType] = name.split(".");
-  const mode = true || modeParameter === "dev" ? "development" : "production";
+function getWebpackConfig(options) {
+  const { filePath, fileType, fileName, mode: modeParameter } = options;
+  const mode = modeParameter === "dev" ? "development" : "production";
   const isProduction = mode === "production";
-  const sketch = { name: namePrefix, filePath };
+  const sketch = { filePath, fileType, fileName };
 
-  if (!fs.existsSync(filePath)) {
-    console.log(`Cannot find file: ${name}. Path: ${filePath}`);
-    process.exit(1);
-  }
-
-  const app = express();
-
-  app.use(statusMiddleware);
-  app.get("/favicon.png", (req, res) =>
-    res.sendFile(path.resolve(__dirname, "./assets/favicon.png"))
-  );
-
-  await new Promise((resolve, reject) => {
-    const server = app.listen(port, (error) => {
-      if (error) {
-        return reject(error);
-      }
-      return resolve({ server });
-    });
-  });
-
-  const webpackConfig = {
+  return {
     entry: {
       easel: [
         ...(isProduction ? [] : ["webpack-hot-middleware/client"]),
         path.resolve(__dirname, "./easel/index.jsx"),
       ],
-      [namePrefix]: [
+      [fileName]: [
         ...(isProduction ? [] : ["webpack-hot-middleware/client?reload=true"]),
         filePath,
       ],
@@ -80,22 +57,12 @@ const command = async (name, options) => {
       }),
       new HtmlWebpackPlugin({
         template: path.resolve(__dirname, `./assets/${fileType}.html`),
-        filename: `${namePrefix}.html`,
-        chunks: [namePrefix],
+        filename: `${fileName}.html`,
+        chunks: [fileName],
       }),
       new webpack.BannerPlugin({
         include: "easel",
         banner: `window.SKETCH = ${JSON.stringify(sketch)};\n`,
-        entryOnly: true,
-        raw: true,
-      }),
-      new webpack.BannerPlugin({
-        include: namePrefix,
-        banner: `
-          // if (module && module.hot) module.hot.accept();
-          // console.log(import.meta.webpackHot)
-        `,
-        footer: true,
         entryOnly: true,
         raw: true,
       }),
@@ -136,6 +103,36 @@ const command = async (name, options) => {
       ],
     },
   };
+}
+
+const command = async (name, options) => {
+  const port = options.port || 3000;
+  const [fileName, fileType] = name.split(".");
+  const filePath = path.join(process.cwd(), name);
+  const config = { filePath, fileType, fileName, mode: options.mode || "dev" };
+
+  if (!fs.existsSync(filePath)) {
+    console.log(`Cannot find file: ${name}. Path: ${filePath}`);
+    process.exit(1);
+  }
+
+  const app = express();
+
+  app.use(statusMiddleware);
+  app.get("/favicon.png", (req, res) =>
+    res.sendFile(path.resolve(__dirname, "./assets/favicon.png"))
+  );
+
+  await new Promise((resolve, reject) => {
+    const server = app.listen(port, (error) => {
+      if (error) {
+        return reject(error);
+      }
+      return resolve({ server });
+    });
+  });
+
+  const webpackConfig = getWebpackConfig(config);
   const compiler = webpack(webpackConfig);
 
   // https://stackoverflow.com/questions/43921770/webpack-dev-middleware-pass-through-for-all-routes
@@ -150,12 +147,9 @@ const command = async (name, options) => {
 
   status = STATUS_STARTED;
 
-  console.log(`running at 0.0.0.0:${port}, url: http://localhost:${port}`);
-  console.log();
   console.log(
-    "all other logs are from webpack (that bundles your code). press CTRL+C to stop this server"
+    `Running at 0.0.0.0:${port}, url: http://localhost:${port}\n\nAll other logs are from webpack (it bundles your code). Press CTRL+C to stop the server.\n`
   );
-  console.log();
 };
 
 module.exports = command;
