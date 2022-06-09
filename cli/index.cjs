@@ -18,7 +18,7 @@ program
 
 program
   .command("dev")
-  .argument("<name>", "name of the sketch")
+  .argument("<filename>", "name of the sketch")
   .option(
     "-p, --port <port>",
     "port number on which to start the server",
@@ -51,7 +51,7 @@ program
 
 // program
 //   .command("render")
-//   .argument("<name>", "name of the sketch")
+//   .argument("<filename>", "name of the sketch")
 //   .option("-n, --number <number>", "render $number of outputs", "8")
 //   .action(renderCMD);
 

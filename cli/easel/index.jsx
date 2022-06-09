@@ -2,7 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 
 function Easel(props) {
-  const name = window?.SKETCH?.fileName || "_template";
+  const name = window?.SKETCH?.name || "_template";
+
+  if (!name) {
+    return <p>An error occurred while accessing the sketch's name.</p>;
+  }
 
   return (
     <>

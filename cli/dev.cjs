@@ -29,10 +29,10 @@ function statusMiddleware(req, res, next) {
 }
 
 function getWebpackConfig(options) {
-  const { filePath, fileType, fileName, mode: modeParameter } = options;
+  const { filepath, library, mode: modeParameter, name } = options;
   const mode = modeParameter === "dev" ? "development" : "production";
   const isProduction = mode === "production";
-  const sketch = { filePath, fileType, fileName };
+  const sketch = { filepath, library, name };
 
   return {
     entry: {
@@ -40,9 +40,9 @@ function getWebpackConfig(options) {
         ...(isProduction ? [] : ["webpack-hot-middleware/client"]),
         path.resolve(__dirname, "./easel/index.jsx"),
       ],
-      [fileName]: [
+      [name]: [
         ...(isProduction ? [] : ["webpack-hot-middleware/client?reload=true"]),
-        filePath,
+        filepath,
       ],
     },
     output: {
@@ -56,9 +56,9 @@ function getWebpackConfig(options) {
         chunks: ["easel"],
       }),
       new HtmlWebpackPlugin({
-        template: path.resolve(__dirname, `./assets/${fileType}.html`),
-        filename: `${fileName}.html`,
-        chunks: [fileName],
+        template: path.resolve(__dirname, `./assets/${library}.html`),
+        filename: `${name}.html`,
+        chunks: [name],
       }),
       new webpack.BannerPlugin({
         include: "easel",
@@ -105,14 +105,22 @@ function getWebpackConfig(options) {
   };
 }
 
-const command = async (name, options) => {
+const command = async (filename, options) => {
   const port = options.port || 3000;
-  const [fileName, fileType] = name.split(".");
-  const filePath = path.join(process.cwd(), name);
-  const config = { filePath, fileType, fileName, mode: options.mode || "dev" };
+  const [name, library = "p5", extension = "js"] = filename.split(".");
+  const filepath = path.join(
+    process.cwd(),
+    [name, library, extension].join(".")
+  );
+  const config = {
+    filepath,
+    library,
+    mode: options.mode || "dev",
+    name,
+  };
 
-  if (!fs.existsSync(filePath)) {
-    console.log(`Cannot find file: ${name}. Path: ${filePath}`);
+  if (!fs.existsSync(filepath)) {
+    console.log(`Cannot find file: ${name}. Path: ${filepath}`);
     process.exit(1);
   }
 
