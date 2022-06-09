@@ -13,7 +13,7 @@ function sketch(p5, state) {
 const trimTemplate = (template) =>
   template.charAt(0) === "\n" ? template.slice(1) : template;
 
-const fileTypes = {
+const LIBRARIES = {
   p5: {
     extension: "p5",
     globalVariable: "p5",
@@ -28,23 +28,26 @@ const fileTypes = {
   },
 };
 
-const FILE_TYPES = Object.keys(fileTypes);
-const DEFAULT_FILETYPE = "p5";
+const VALID_LIBRARIES = Object.keys(LIBRARIES);
+const DEFAULT_LIBRARY = "p5";
 
-const extractFileType = (name) => {
+const parseFilename = (filename) => {
   // filename.type.ext, i.e hello.p5.js
-  const splitName = name.split(".");
+  const [name, library = "p5", extension = "js"] = filename.split(".");
+  const _filename = [name, library, extension].join(".");
+  const sketch = {
+    ...(LIBRARIES[library] || LIBRARIES[DEFAULT_LIBRARY]),
+    filename: _filename,
+    name,
+    library,
+    extension,
+  };
 
-  return splitName[1];
-};
-
-const getFileType = (type) => {
-  return fileTypes[type] || fileTypes[DEFAULT_FILETYPE];
+  return sketch;
 };
 
 module.exports = {
-  FILE_TYPES,
-  DEFAULT_FILETYPE,
-  extractFileType,
-  getFileType,
+  DEFAULT_LIBRARY,
+  VALID_LIBRARIES,
+  parseFilename,
 };

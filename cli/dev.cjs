@@ -7,6 +7,10 @@ const webpack = require("webpack");
 const webpackDevMiddleware = require("webpack-dev-middleware");
 const webpackHotMiddleware = require("webpack-hot-middleware");
 
+const utils = require("./utils.cjs");
+
+const { parseFilename } = utils;
+
 const STATUS_IDLE = "idle";
 const STATUS_STARTED = "started";
 
@@ -28,11 +32,31 @@ function statusMiddleware(req, res, next) {
   }
 }
 
-function getWebpackConfig(options) {
-  const { filepath, library, mode: modeParameter, name } = options;
-  const mode = modeParameter === "dev" ? "development" : "production";
+function getTemplateContent(sketch) {
+  const { name, script } = sketch;
+
+  return `
+  <!DOCTYPE html>
+  <html lang="en">
+
+  <head>
+    <title>${name} | atwo</title>
+    <link rel="icon" href="./favicon.png" type="image/png" />
+    <script src="${script}"></script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+  </body>
+
+  </html>
+  `;
+}
+
+function getWebpackConfig(sketch, modeParam) {
+  const { filename, library, name } = sketch;
+  const mode = modeParam === "dev" ? "development" : "production";
   const isProduction = mode === "production";
-  const sketch = { filepath, library, name };
 
   return {
     entry: {
@@ -42,7 +66,7 @@ function getWebpackConfig(options) {
       ],
       [name]: [
         ...(isProduction ? [] : ["webpack-hot-middleware/client?reload=true"]),
-        filepath,
+        `./${filename}`,
       ],
     },
     output: {
@@ -56,9 +80,10 @@ function getWebpackConfig(options) {
         chunks: ["easel"],
       }),
       new HtmlWebpackPlugin({
-        template: path.resolve(__dirname, `./assets/${library}.html`),
+        // template: path.resolve(__dirname, `./assets/${sketch.library}.html`),
         filename: `${name}.html`,
         chunks: [name],
+        templateContent: getTemplateContent(sketch),
       }),
       new webpack.BannerPlugin({
         include: "easel",
@@ -105,19 +130,11 @@ function getWebpackConfig(options) {
   };
 }
 
-const command = async (filename, options) => {
+const command = async (filenameParam, options) => {
   const port = options.port || 3000;
-  const [name, library = "p5", extension = "js"] = filename.split(".");
-  const filepath = path.join(
-    process.cwd(),
-    [name, library, extension].join(".")
-  );
-  const config = {
-    filepath,
-    library,
-    mode: options.mode || "dev",
-    name,
-  };
+  const sketch = parseFilename(filenameParam);
+  const { filename, name } = sketch;
+  const filepath = path.join(process.cwd(), filename);
 
   if (!fs.existsSync(filepath)) {
     console.log(`Cannot find file: ${name}. Path: ${filepath}`);
@@ -140,7 +157,7 @@ const command = async (filename, options) => {
     });
   });
 
-  const webpackConfig = getWebpackConfig(config);
+  const webpackConfig = getWebpackConfig(sketch, options.mode || "dev");
   const compiler = webpack(webpackConfig);
 
   // https://stackoverflow.com/questions/43921770/webpack-dev-middleware-pass-through-for-all-routes
