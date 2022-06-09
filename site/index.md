@@ -1,6 +1,6 @@
 # atwo
 
-cli + ide. for creating with code.
+A creative coding framework.
 
 ```
 npm i atwo -g

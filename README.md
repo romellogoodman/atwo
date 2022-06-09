@@ -2,7 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/atwo.svg)](https://badge.fury.io/js/atwo)
 
-atwo is a cli and ide for creating with code.
+A creative coding framework.
 
 ```sh
 npm i atwo -g
@@ -25,12 +25,6 @@ Technologies
 - [Rollup.js](https://rollupjs.org/guide/en/)
 
 ### Development
-
-Developing the CLI
-
-```sh
-npm run dev
-```
 
 Developing the website
 
