@@ -9,10 +9,11 @@ const webpackHotMiddleware = require("webpack-hot-middleware");
 
 const utils = require("./utils.cjs");
 
-const { parseFilename } = utils;
+const { getSketch } = utils;
 
 const STATUS_IDLE = "idle";
 const STATUS_STARTED = "started";
+const TEMP_PATH = path.resolve(process.cwd(), ".atwo");
 
 let status = STATUS_IDLE;
 
@@ -53,10 +54,32 @@ function getTemplateContent(sketch) {
   `;
 }
 
+function createFrameworkFile(filename, renderFrameworkFile) {
+  const filepath = path.join(TEMP_PATH, filename);
+
+  if (!fs.existsSync(TEMP_PATH)) {
+    fs.mkdirSync(TEMP_PATH);
+  }
+
+  if (fs.existsSync(filepath)) {
+    fs.rmSync(filepath);
+  }
+
+  const content = renderFrameworkFile(filename);
+
+  fs.writeFileSync(filepath, content);
+
+  return { filename, filepath };
+}
+
 function getWebpackConfig(sketch, modeParam) {
-  const { filename, library, name } = sketch;
+  const { filename, library, name, renderFrameworkFile } = sketch;
   const mode = modeParam === "dev" ? "development" : "production";
   const isProduction = mode === "production";
+  const { filepath: tempFilepath } = createFrameworkFile(
+    filename,
+    renderFrameworkFile
+  );
 
   return {
     entry: {
@@ -66,11 +89,10 @@ function getWebpackConfig(sketch, modeParam) {
       ],
       [name]: [
         ...(isProduction ? [] : ["webpack-hot-middleware/client?reload=true"]),
-        `./${filename}`,
+        path.resolve(tempFilepath),
       ],
     },
     output: {
-      path: path.resolve(__dirname, "dist"),
       publicPath: "",
     },
     mode,
@@ -80,7 +102,6 @@ function getWebpackConfig(sketch, modeParam) {
         chunks: ["easel"],
       }),
       new HtmlWebpackPlugin({
-        // template: path.resolve(__dirname, `./assets/${sketch.library}.html`),
         filename: `${name}.html`,
         chunks: [name],
         templateContent: getTemplateContent(sketch),
@@ -132,7 +153,7 @@ function getWebpackConfig(sketch, modeParam) {
 
 const command = async (filenameParam, options) => {
   const port = options.port || 3000;
-  const sketch = parseFilename(filenameParam);
+  const sketch = getSketch(filenameParam);
   const { filename, name } = sketch;
   const filepath = path.join(process.cwd(), filename);
 
@@ -173,7 +194,7 @@ const command = async (filenameParam, options) => {
   status = STATUS_STARTED;
 
   console.log(
-    `Running at 0.0.0.0:${port}, url: http://localhost:${port}\n\nAll other logs are from webpack (it bundles your code). Press CTRL+C to stop the server.\n`
+    `Running at 0.0.0.0:${port}, url: http://localhost:${port}\n\nAll other logs are from webpack. Press CTRL+C to stop the server.\n`
   );
 };
 

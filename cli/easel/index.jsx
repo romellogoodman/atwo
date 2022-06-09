@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { hot } from "react-hot-loader/root";
 
 function Easel(props) {
   const name = window?.SKETCH?.name || "_template";
@@ -23,8 +24,7 @@ function Easel(props) {
   );
 }
 
+const Hot = hot(Easel);
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
-root.render(<Easel />);
-
-if (module.hot) module.hot.accept();
+root.render(<Hot />);

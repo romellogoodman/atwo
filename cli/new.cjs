@@ -3,11 +3,14 @@ const path = require("path");
 
 const utils = require("./utils.cjs");
 
-const { parseFilename } = utils;
+const { getSketch, VALID_LIBRARIES } = utils;
 
 const command = (name, options) => {
-  const { extension, template } = parseFilename(options.lib);
-  const filename = `${name}.${extension}.js`;
+  let sketchName = `${name}`;
+
+  if (VALID_LIBRARIES.includes(options.lib)) sketchName += `.${options.lib}.js`;
+
+  const { filename, template } = getSketch(sketchName);
   const filePath = path.join(process.cwd(), filename);
 
   fs.writeFileSync(filePath, template);
