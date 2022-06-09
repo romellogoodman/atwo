@@ -1,6 +1,6 @@
 {
   "name": "atwo",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A creative coding framework.",
   "scripts": {
     "dev": "eleventy --input=site --formats=11ty.js,md --serve --port=3000",
