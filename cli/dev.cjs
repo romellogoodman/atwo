@@ -2,6 +2,7 @@ const history = require("connect-history-api-fallback");
 const express = require("express");
 const fs = require("fs");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const open = require("open");
 const path = require("path");
 const webpack = require("webpack");
 const webpackDevMiddleware = require("webpack-dev-middleware");
@@ -54,7 +55,32 @@ function getTemplateContent(sketch) {
   `;
 }
 
-function createFrameworkFile(filename, renderFrameworkFile) {
+function createConfigFile(sketch) {
+  const { filename } = sketch;
+  const filepath = path.join(TEMP_PATH, `_config-${filename}`);
+
+  if (!fs.existsSync(TEMP_PATH)) {
+    fs.mkdirSync(TEMP_PATH);
+  }
+
+  if (fs.existsSync(filepath)) {
+    fs.rmSync(filepath);
+  }
+
+  const content = `
+    import config from '../${filename}';
+
+    window.CONFIG = JSON.stringify(config);\n
+    window.SKETCH = ${JSON.stringify(sketch)};\n
+  `;
+
+  fs.writeFileSync(filepath, content);
+
+  return { filename, filepath };
+}
+
+function createFrameworkFile(sketch) {
+  const { filename, renderFrameworkFile } = sketch;
   const filepath = path.join(TEMP_PATH, filename);
 
   if (!fs.existsSync(TEMP_PATH)) {
@@ -76,20 +102,20 @@ function getWebpackConfig(sketch, modeParam) {
   const { filename, library, name, renderFrameworkFile } = sketch;
   const mode = modeParam === "dev" ? "development" : "production";
   const isProduction = mode === "production";
-  const { filepath: tempFilepath } = createFrameworkFile(
-    filename,
-    renderFrameworkFile
-  );
+  const { filepath: frameworkFile } = createFrameworkFile(sketch);
+  const { filepath: stateFilePath } = createConfigFile(sketch);
 
   return {
     entry: {
-      easel: [
+      editor: [
         ...(isProduction ? [] : ["webpack-hot-middleware/client"]),
-        path.resolve(__dirname, "./easel/index.jsx"),
+        path.resolve(stateFilePath),
+        path.resolve(__dirname, "./editor/app.jsx"),
       ],
       [name]: [
         ...(isProduction ? [] : ["webpack-hot-middleware/client?reload=true"]),
-        path.resolve(tempFilepath),
+        path.resolve(__dirname, "./editor/state.js"),
+        path.resolve(frameworkFile),
       ],
     },
     output: {
@@ -99,18 +125,12 @@ function getWebpackConfig(sketch, modeParam) {
     plugins: [
       new HtmlWebpackPlugin({
         template: path.resolve(__dirname, "./assets/index.html"),
-        chunks: ["easel"],
+        chunks: ["editor"],
       }),
       new HtmlWebpackPlugin({
         filename: `${name}.html`,
         chunks: [name],
         templateContent: getTemplateContent(sketch),
-      }),
-      new webpack.BannerPlugin({
-        include: "easel",
-        banner: `window.SKETCH = ${JSON.stringify(sketch)};\n`,
-        entryOnly: true,
-        raw: true,
       }),
       ...(isProduction ? [] : [new webpack.HotModuleReplacementPlugin()]),
     ],
@@ -174,6 +194,11 @@ const command = async (filenameParam, options) => {
       if (error) {
         return reject(error);
       }
+
+      if (options.open) {
+        open(`http://localhost:${port}`);
+      }
+
       return resolve({ server });
     });
   });

@@ -25,7 +25,7 @@ function setup(p5, state = {}) {
   p5.createCanvas(400, 400);
 }
 
-function draw(p5, state) {
+function draw(p5, state = {}) {
   p5.background(state.color || "pink");
   p5.circle(200, 200, state.size || 100);
 }
@@ -46,9 +46,10 @@ const LIBRARIES = {
       const content = `
       import config from '../${filename}';
 
+      // TODO: remove before v1
       console.log(config);
 
-      const state = {color: 'teal', size: 20};
+      const state = window.STATE || {};
       const p5Config = function (sketch) {
         sketch.setup = () => config.setup(sketch, state)
         sketch.draw = () => config.draw(sketch, state)
@@ -69,9 +70,12 @@ const LIBRARIES = {
       const content = `
       import config from '../${filename}';
 
+      // TODO: remove before v1
       console.log(config);
 
-      config.draw();
+      const state = window.STATE || {};
+
+      config.draw(state);
       `;
 
       return content;
