@@ -35,7 +35,7 @@ function statusMiddleware(req, res, next) {
 }
 
 function getTemplateContent(sketch) {
-  const { name, script } = sketch;
+  const { body = "", name, script = "" } = sketch;
 
   return `
   <!DOCTYPE html>
@@ -44,11 +44,11 @@ function getTemplateContent(sketch) {
   <head>
     <title>${name} | atwo</title>
     <link rel="icon" href="./favicon.png" type="image/png" />
-    <script src="${script}"></script>
+    ${script ? `<script src="${script}"></script>` : ""}
   </head>
 
   <body>
-    <div id="root"></div>
+    ${body}
   </body>
 
   </html>

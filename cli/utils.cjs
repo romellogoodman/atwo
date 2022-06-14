@@ -1,47 +1,41 @@
-const goodgraphicsTemplate = `
-function draw(state = {}) {
-  const svg = new goodgraphics({
-    attributes: {
-      fill: "white",
-      style: "background: #eeeeee",
-    },
-    height: 400,
-    width: 400,
-  });
-
-  svg.square(200 - 50, 200 - 50, 100, {
-    fill: state.fill || "red",
-    stroke: "1px",
-  });
-
-  svg.draw();
-}
-
-export default { draw };
-`;
-
-const p5Template = `
-function setup(p5, state = {}) {
-  p5.createCanvas(400, 400);
-}
-
-function draw(p5, state = {}) {
-  p5.background(state.color || "pink");
-  p5.circle(200, 200, state.size || 100);
-}
-
-export default { draw, setup };
-`;
-
 const trimTemplate = (template) =>
   template.charAt(0) === "\n" ? template.slice(1) : template;
 
 const LIBRARIES = {
+  canvas: {
+    extension: "canvas",
+    body: `<canvas width="400" height="400" id="canvas"></canvas>`,
+    template: trimTemplate(``),
+    renderFrameworkFile: (filename) => {
+      const content = `
+      import config from '../${filename}';
+
+      // TODO: remove before v1
+      console.log(config);
+
+      const state = window.STATE || {};
+
+      config.draw(state);
+      `;
+
+      return content;
+    },
+  },
   p5: {
     extension: "p5",
-    globalVariable: "p5",
     script: "https://unpkg.com/p5@1.4.1/lib/p5.min.js",
-    template: trimTemplate(p5Template),
+    template: trimTemplate(`
+      function setup(p5, state = {}) {
+        p5.createCanvas(400, 400);
+      }
+
+      function draw(p5, state = {}) {
+        p5.background(state.color || "pink");
+        p5.circle(200, 200, state.size || 100);
+      }
+
+      export default { draw, setup };
+    `),
     renderFrameworkFile: (filename) => {
       const content = `
       import config from '../${filename}';
@@ -63,9 +57,28 @@ const LIBRARIES = {
   },
   goodgraphics: {
     extension: "goodgraphics",
-    globalVariable: "goodgraphics",
     script: "https://unpkg.com/goodgraphics@0.15.0/dist/goodgraphics.umd.js",
-    template: trimTemplate(goodgraphicsTemplate),
+    template: trimTemplate(`
+      function draw(state = {}) {
+        const svg = new goodgraphics({
+          attributes: {
+            fill: "white",
+            style: "background: #eeeeee",
+          },
+          height: 400,
+          width: 400,
+        });
+
+        svg.square(200 - 50, 200 - 50, 100, {
+          fill: state.fill || "red",
+          stroke: "1px",
+        });
+
+        svg.draw();
+      }
+
+      export default { draw };
+    `),
     renderFrameworkFile: (filename) => {
       const content = `
       import config from '../${filename}';
