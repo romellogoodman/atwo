@@ -5,8 +5,8 @@ const utils = require("./utils.cjs");
 
 const { getSketch, VALID_LIBRARIES } = utils;
 
-const command = (name, options) => {
-  let sketchName = `${name}`;
+const command = (filenameParam, options) => {
+  let sketchName = `${filenameParam}`;
 
   if (VALID_LIBRARIES.includes(options.lib)) sketchName += `.${options.lib}.js`;
 

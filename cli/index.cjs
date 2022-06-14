@@ -7,7 +7,7 @@ const renderCMD = require("./render.cjs");
 const { DEFAULT_LIBRARY, VALID_LIBRARIES } = require("./utils.cjs");
 const pkg = require("../package.json");
 
-const { program } = commander;
+const { program, Option } = commander;
 
 program
   .name(pkg.name)
@@ -29,11 +29,11 @@ program
 program
   .command("new")
   .description("Create a new sketch")
-  .argument("<name>", "name of the sketch")
-  .option(
-    "-l, --lib <library>",
-    "the coding library of the script",
-    DEFAULT_LIBRARY
+  .argument("<filename>", "name of the sketch")
+  .addOption(
+    new Option("-l, --lib <library>", "the coding library of the script")
+      .default(DEFAULT_LIBRARY)
+      .choices(VALID_LIBRARIES)
   )
   .action(newCMD);
 
