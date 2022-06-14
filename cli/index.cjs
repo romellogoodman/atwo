@@ -2,8 +2,6 @@
 const commander = require("commander");
 
 const devCMD = require("./dev.cjs");
-// const galleryCMD = require("./gallery.cjs");
-const lsCMD = require("./ls.cjs");
 const newCMD = require("./new.cjs");
 // const renderCMD = require("./render.cjs");
 const { DEFAULT_LIBRARY, VALID_LIBRARIES } = require("./utils.cjs");
@@ -29,15 +27,6 @@ program
   .action(devCMD);
 
 program
-  .command("ls")
-  .description("List the files in the current directory")
-  .option(
-    "-f, --filter <type>",
-    `type of file to filter: ${VALID_LIBRARIES.join(",")}`
-  )
-  .action(lsCMD);
-
-program
   .command("new")
   .description("Create a new sketch")
   .argument("<name>", "name of the sketch")
@@ -47,14 +36,6 @@ program
     DEFAULT_LIBRARY
   )
   .action(newCMD);
-
-// program
-//   .command("gallery")
-//   .option(
-//     "-f, --filter <type>",
-//     `type of file to filter: ${VALID_LIBRARIES.join(",")}`
-//   )
-//   .action(galleryCMD);
 
 // program
 //   .command("render")
