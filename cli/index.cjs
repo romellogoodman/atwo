@@ -3,7 +3,7 @@ const commander = require("commander");
 
 const devCMD = require("./dev.cjs");
 const newCMD = require("./new.cjs");
-// const renderCMD = require("./render.cjs");
+const renderCMD = require("./render.cjs");
 const { DEFAULT_LIBRARY, VALID_LIBRARIES } = require("./utils.cjs");
 const pkg = require("../package.json");
 
@@ -37,10 +37,12 @@ program
   )
   .action(newCMD);
 
-// program
-//   .command("render")
-//   .argument("<filename>", "name of the sketch")
-//   .option("-n, --number <number>", "render $number of outputs", "8")
-//   .action(renderCMD);
+program
+  .command("render")
+  .description("Render outputs of the sketch")
+  .argument("<filename>", "name of the sketch")
+  .option("-n, --number <number>", "render $number of outputs", "8")
+  .option("-s, --seed <seed>", "render using the following seed")
+  .action(renderCMD);
 
 program.parse();
