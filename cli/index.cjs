@@ -4,7 +4,7 @@ const { program, Option } = require("commander");
 const devCMD = require("./dev.cjs");
 const newCMD = require("./new.cjs");
 const renderCMD = require("./render.cjs");
-const { DEFAULT_LIBRARY, VALID_LIBRARIES } = require("./utils/libraries.cjs");
+const { DEFAULT_LIBRARY, VALID_LIBRARIES } = require("./common/libraries.cjs");
 const pkg = require("../package.json");
 
 program
@@ -41,6 +41,11 @@ program
   .argument("<filename>", "name of the sketch")
   .option("-n, --number <number>", "render $number of outputs", "8")
   .option("-s, --seed <seed>", "render using the following seed")
+  .option(
+    "-p, --port <port>",
+    "port number on which to start the server",
+    "3000"
+  )
   .action(renderCMD);
 
 program.parse();

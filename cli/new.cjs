@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const { getSketch, VALID_LIBRARIES } = require("./utils/libraries.cjs");
+const { getSketch, VALID_LIBRARIES } = require("./common/libraries.cjs");
 
 const command = (filenameParam, options) => {
   let sketchName = `${filenameParam}`;
