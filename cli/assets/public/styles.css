@@ -1,0 +1,30 @@
+* {
+  vertical-align: baseline;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: inherit;
+  font-style: inherit;
+}
+
+main {
+  height: 100vh;
+  max-height: 100vh;
+  width: 100%;
+  overflow: scroll;
+  background: #eee;
+}
+
+.container {
+  margin: 32px auto 0;
+  height: calc(100vh - 50px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+iframe {
+  border: none;
+  box-shadow: rgb(0 0 0 / 10%) 0px 1px 5px 0px;
+}

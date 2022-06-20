@@ -15,6 +15,9 @@ function getTemplateContent(sketch) {
   <head>
     <title>${name} | atwo</title>
     <link rel="icon" href="/public/favicon.png" type="image/png" />
+    <style>
+        * { margin: 0; }
+    </style>
     ${script ? `<script src="${script}"></script>` : ""}
   </head>
 
@@ -96,6 +99,7 @@ function getWebpackConfig(sketch, options = { mode: "dev" }) {
     plugins: [
       new HtmlWebpackPlugin({
         template: path.resolve(__dirname, "../assets/index.html"),
+        title: `${name} | atwo`,
         chunks: ["editor"],
       }),
       new HtmlWebpackPlugin({

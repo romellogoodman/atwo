@@ -22,14 +22,14 @@ function Easel(props) {
   return (
     <>
       <main>
-        <p>atwo</p>
-        <input type="range" onChange={handleInput}></input>
-        <iframe
-          height="500"
-          width="500"
-          title={`atwo ${name} sketch.`}
-          src={`/${name}.html?size=${foo}`}
-        />
+        <div className="container">
+          <iframe
+            height="400"
+            width="400"
+            title={`atwo ${name} sketch.`}
+            src={`/${name}.html?size=${foo}`}
+          />
+        </div>
       </main>
     </>
   );
