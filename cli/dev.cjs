@@ -24,11 +24,11 @@ function statusMiddleware(req, res, next) {
   } else {
     res.format({
       default: () =>
-        res.sendFile(path.resolve(__dirname, "./assets/loading.html")),
+        res.sendFile(path.resolve(__dirname, "./assets/public/loading.html")),
       "image/png": () =>
-        res.sendFile(path.resolve(__dirname, "./assets/favicon.png")),
+        res.sendFile(path.resolve(__dirname, "./assets/public/favicon.png")),
       "text/html": () =>
-        res.sendFile(path.resolve(__dirname, "./assets/loading.html")),
+        res.sendFile(path.resolve(__dirname, "./assets/public/loading.html")),
       "application/json": () => res.json({ loading: true, status }),
     });
   }
@@ -43,7 +43,7 @@ function getTemplateContent(sketch) {
 
   <head>
     <title>${name} | atwo</title>
-    <link rel="icon" href="./favicon.png" type="image/png" />
+    <link rel="icon" href="/public/favicon.png" type="image/png" />
     ${script ? `<script src="${script}"></script>` : ""}
   </head>
 
@@ -185,8 +185,9 @@ const command = async (filenameParam, options) => {
   const app = express();
 
   app.use(statusMiddleware);
-  app.get("/favicon.png", (req, res) =>
-    res.sendFile(path.resolve(__dirname, "./assets/favicon.png"))
+  app.use(
+    "/public",
+    express.static(path.resolve(__dirname, "./assets/public"))
   );
 
   await new Promise((resolve, reject) => {
