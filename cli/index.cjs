@@ -1,13 +1,11 @@
 #!/usr/bin/env node
-const commander = require("commander");
+const { program, Option } = require("commander");
 
 const devCMD = require("./dev.cjs");
 const newCMD = require("./new.cjs");
 const renderCMD = require("./render.cjs");
-const { DEFAULT_LIBRARY, VALID_LIBRARIES } = require("./utils.cjs");
+const { DEFAULT_LIBRARY, VALID_LIBRARIES } = require("./utils/libraries.cjs");
 const pkg = require("../package.json");
-
-const { program, Option } = commander;
 
 program
   .name(pkg.name)

@@ -23,7 +23,8 @@ const LIBRARIES = {
   },
   p5: {
     extension: "p5",
-    script: "https://unpkg.com/p5@1.4.1/lib/p5.min.js",
+    script: "/public/p5.min.js",
+    // script: "https://unpkg.com/p5@1.4.1/lib/p5.min.js",
     template: trimTemplate(`
       function setup(p5, state = {}) {
         p5.createCanvas(400, 400);
@@ -57,7 +58,8 @@ const LIBRARIES = {
   },
   goodgraphics: {
     extension: "goodgraphics",
-    script: "https://unpkg.com/goodgraphics@0.15.0/dist/goodgraphics.umd.js",
+    script: "/public/goodgraphics.js",
+    // script: "https://unpkg.com/goodgraphics@0.15.0/dist/goodgraphics.umd.js",
     template: trimTemplate(`
       function draw(state = {}) {
         const svg = new goodgraphics({

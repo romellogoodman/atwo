@@ -8,9 +8,7 @@ const webpack = require("webpack");
 const webpackDevMiddleware = require("webpack-dev-middleware");
 const webpackHotMiddleware = require("webpack-hot-middleware");
 
-const utils = require("./utils.cjs");
-
-const { getSketch } = utils;
+const { getSketch } = require("./utils/libraries.cjs");
 
 const STATUS_IDLE = "idle";
 const STATUS_STARTED = "started";
