@@ -32,6 +32,36 @@ function statusMiddleware(req, res, next) {
   }
 }
 
+function renderMiddleware(options) {
+  const { port, sketch } = options;
+
+  return async function (req, res, next) {
+    const { seed = "no-seed" } = req.query;
+    const url = `http://localhost:${port}`;
+    const sketchUrl = `${url}/${sketch.name}.html?seed=${seed}`;
+    const folderPath = path.join(process.cwd(), "output");
+    const imageName = `${sketch.filename}${seed ? `-${seed}` : ""}.png`;
+    const savePath = path.join(folderPath, imageName);
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    console.log("open to", sketchUrl);
+
+    await page.goto(sketchUrl);
+
+    if (!fs.existsSync(folderPath)) {
+      fs.mkdirSync(folderPath);
+    }
+
+    await page.screenshot({ path: savePath });
+    await browser.close();
+
+    open(folderPath);
+
+    res.json({ sketch, seed, url: sketchUrl });
+  };
+}
+
 const command = async (filenameParam, options) => {
   const port = options.port || 3000;
   const sketch = getSketch(filenameParam);
@@ -50,28 +80,7 @@ const command = async (filenameParam, options) => {
     "/public",
     express.static(path.resolve(__dirname, "./assets/public"))
   );
-  app.get("/render", async (req, res) => {
-    const { seed } = req.query;
-    const url = `http://localhost:${port}`;
-    const sketchUrl = `${url}/${sketch.name}.html?seed=${seed}`;
-    const folderPath = path.join(process.cwd(), "output");
-    const savePath = path.join(folderPath, `${filenameParam}.png`);
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-
-    console.log("open to", sketchUrl);
-
-    await page.goto(sketchUrl);
-
-    if (!fs.existsSync(folderPath)) {
-      fs.mkdirSync(folderPath);
-    }
-
-    await page.screenshot({ path: savePath });
-    await browser.close();
-
-    open(folderPath);
-  });
+  app.get("/render", renderMiddleware({ port, sketch }));
 
   await new Promise((resolve, reject) => {
     const server = app.listen(port, (error) => {
