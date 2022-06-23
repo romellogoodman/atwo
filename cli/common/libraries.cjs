@@ -5,7 +5,16 @@ const LIBRARIES = {
   canvas: {
     extension: "canvas",
     body: `<canvas width="400" height="400" id="canvas"></canvas>`,
-    template: trimTemplate(``),
+    template: trimTemplate(`
+      function draw(state = {}) {}
+
+      export default {
+        name: "_template-canvas",
+        draw,
+        height: 400,
+        width: 400,
+      };
+    `),
     renderFrameworkFile: (filename) => {
       const content = `
       import config from '../${filename}';
@@ -27,15 +36,22 @@ const LIBRARIES = {
     // script: "https://unpkg.com/p5@1.4.1/lib/p5.min.js",
     template: trimTemplate(`
       function setup(p5, state = {}) {
-        p5.createCanvas(400, 400);
+        p5.createCanvas(state.width, state.height);
       }
 
       function draw(p5, state = {}) {
-        p5.background(state.color || "pink");
-        p5.circle(200, 200, state.size || 100);
+        p5.background("white");
+        p5.fill(state.color || "pink")
+        p5.circle(state.width / 2, state.height / 2, state.size || 100);
       }
 
-      export default { draw, setup };
+      export default {
+        name: "_template-p5",
+        draw,
+        setup,
+        height: 400,
+        width: 400,
+      };
     `),
     renderFrameworkFile: (filename) => {
       const content = `
@@ -67,11 +83,13 @@ const LIBRARIES = {
             fill: "white",
             style: "background: #eeeeee",
           },
-          height: 400,
-          width: 400,
+          height: state.height,
+          width: state.width,
         });
 
-        svg.square(200 - 50, 200 - 50, 100, {
+        const smallerSide = Math.min(state.width, state.height);
+
+        svg.circle(state.width / 2, state.height / 2, smallerSide / 4, {
           fill: state.fill || "red",
           stroke: "1px",
         });
@@ -79,7 +97,12 @@ const LIBRARIES = {
         svg.draw();
       }
 
-      export default { draw };
+      export default {
+        name: "_template-goodgraphics",
+        draw,
+        height: 400,
+        width: 400,
+      };
     `),
     renderFrameworkFile: (filename) => {
       const content = `

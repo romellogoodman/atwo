@@ -16,8 +16,8 @@ main {
 }
 
 .container {
-  margin: 32px auto 0;
-  height: calc(100vh - 50px);
+  margin: 0 auto;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;

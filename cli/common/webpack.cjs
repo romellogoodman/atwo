@@ -44,7 +44,7 @@ function createConfigFile(sketch) {
   const content = `
     import config from '../${filename}';
 
-    window.CONFIG = JSON.stringify(config);\n
+    window.CONFIG = config;\n
     window.SKETCH = ${JSON.stringify(sketch)};\n
   `;
 
