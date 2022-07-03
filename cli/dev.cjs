@@ -1,9 +1,13 @@
+const bodyParser = require("body-parser");
 const history = require("connect-history-api-fallback");
 const express = require("express");
 const fs = require("fs");
+const { JSDOM } = require("jsdom");
 const open = require("open");
 const path = require("path");
 const puppeteer = require("puppeteer");
+const { MersenneTwister19937, Random } = require("random-js");
+const seedrandom = require("seedrandom");
 const webpack = require("webpack");
 const webpackDevMiddleware = require("webpack-dev-middleware");
 const webpackHotMiddleware = require("webpack-hot-middleware");
@@ -32,28 +36,68 @@ function statusMiddleware(req, res, next) {
   }
 }
 
-function renderMiddleware(options) {
-  const { port, sketch } = options;
+function inputMiddleware(req, res) {
+  const seeder = seedrandom();
+  const { controls = {} } = req.body || {};
+  const seed = req.body.seed || seeder.int32();
+  const random = new Random(MersenneTwister19937.seed(seed));
+  const input = Object.keys(controls).reduce((result, key) => {
+    const controlConfig = controls[key];
+
+    if (Array.isArray(controlConfig)) {
+      result[key] = random.pick(controlConfig);
+      // I used to pick the first index
+      // result[key] = controlConfig[0];
+    } else {
+      const { max, min, value } = controlConfig;
+
+      if (typeof max !== "undefined" && typeof min !== "undefined") {
+        result[key] = random.integer(min, max);
+      } else {
+        result[key] = value;
+      }
+    }
+
+    return result;
+  }, {});
+
+  input.seed = seed;
+
+  res.json(input);
+}
+
+function exportMiddleware(options) {
+  const { port, sketch, type: exportType } = options;
 
   return async function (req, res, next) {
-    const { seed = "no-seed" } = req.query;
-    const url = `http://localhost:${port}`;
-    const sketchUrl = `${url}/${sketch.name}.html?seed=${seed}`;
+    const { input, seed, url: sketchUrl } = req.body;
+    const url = `http://localhost:${port}${sketchUrl}`;
     const folderPath = path.join(process.cwd(), "output");
-    const imageName = `${sketch.filename}${seed ? `-${seed}` : ""}.png`;
-    const savePath = path.join(folderPath, imageName);
+    const exportFilename = `${sketch.filename}${
+      seed ? `-${seed}` : ""
+    }.${exportType}`;
+    const savePath = path.join(folderPath, exportFilename);
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
-    console.log("open to", sketchUrl);
+    console.log("open to", url);
 
-    await page.goto(sketchUrl);
+    await page.goto(url);
 
     if (!fs.existsSync(folderPath)) {
       fs.mkdirSync(folderPath);
     }
 
-    await page.screenshot({ path: savePath });
+    if (exportType === "png") {
+      await page.screenshot({ path: savePath });
+    } else if (exportType === "svg") {
+      const content = await page.content();
+      const dom = new JSDOM(content);
+      const markup = dom.window.document.querySelector("body").innerHTML;
+
+      fs.writeFileSync(savePath, markup);
+    }
+
     await browser.close();
 
     open(folderPath);
@@ -76,11 +120,14 @@ const command = async (filenameParam, options) => {
   const app = express();
 
   app.use(statusMiddleware);
+  app.use(bodyParser.json());
   app.use(
     "/public",
     express.static(path.resolve(__dirname, "./assets/public"))
   );
-  app.get("/render", renderMiddleware({ port, sketch }));
+  app.post("/input", inputMiddleware);
+  app.post("/export/png", exportMiddleware({ port, sketch, type: "png" }));
+  app.post("/export/svg", exportMiddleware({ port, sketch, type: "svg" }));
 
   await new Promise((resolve, reject) => {
     const server = app.listen(port, (error) => {

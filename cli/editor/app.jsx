@@ -2,6 +2,8 @@ import _debounce from "lodash/debounce";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 
+import Controls, { useInput } from "./Controls.jsx";
+
 function qsStringify(params) {
   return Object.keys(params)
     .map((key) => (params[key] ? `${key}=${params[key]}` : ""))
@@ -45,12 +47,6 @@ function useSketchSize(sketch) {
   return { height, width };
 }
 
-function useInput(sketch) {
-  const [input] = useState({});
-
-  return input;
-}
-
 function getSketch() {
   // console.log("CONFIG", window?.CONFIG);
   // console.log("SKETCH", window?.SKETCH);
@@ -64,7 +60,7 @@ function getSketch() {
 function Editor(props) {
   const sketch = getSketch();
   const sketchSize = useSketchSize(sketch);
-  const input = useInput(sketch);
+  const { input, refreshState, updateInput } = useInput(sketch);
   const iframeUrl = getPreviewUrl({ input, sketch, sketchSize });
 
   if (!sketchSize.height || !sketchSize.width) {
@@ -82,6 +78,13 @@ function Editor(props) {
             src={iframeUrl}
           />
         </div>
+        <Controls
+          iframeUrl={iframeUrl}
+          input={input}
+          refreshState={refreshState}
+          sketch={sketch}
+          updateInput={updateInput}
+        />
       </main>
     </>
   );
