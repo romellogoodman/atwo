@@ -1,7 +1,6 @@
 import _debounce from "lodash/debounce";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
-import { hot } from "react-hot-loader/root";
 
 function qsStringify(params) {
   return Object.keys(params)
@@ -62,7 +61,7 @@ function getSketch() {
   };
 }
 
-function Easel(props) {
+function Editor(props) {
   const sketch = getSketch();
   const sketchSize = useSketchSize(sketch);
   const input = useInput(sketch);
@@ -88,7 +87,6 @@ function Easel(props) {
   );
 }
 
-const Hot = hot(Easel);
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
-root.render(<Hot />);
+root.render(<Editor />);

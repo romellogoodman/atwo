@@ -82,7 +82,7 @@ function getWebpackConfig(sketch, options = { mode: "dev" }) {
   return {
     entry: {
       editor: [
-        ...(isProduction ? [] : ["webpack-hot-middleware/client"]),
+        ...(isProduction ? [] : ["webpack-hot-middleware/client?reload=true"]),
         path.resolve(stateFilePath),
         path.resolve(__dirname, "../editor/app.jsx"),
       ],
@@ -129,10 +129,7 @@ function getWebpackConfig(sketch, options = { mode: "dev" }) {
                   },
                 ],
               ],
-              plugins: [
-                "react-hot-loader/babel",
-                "@babel/plugin-transform-runtime",
-              ],
+              plugins: ["@babel/plugin-transform-runtime"],
               env: {
                 test: {
                   presets: ["@babel/preset-env"],
