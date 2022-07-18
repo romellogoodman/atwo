@@ -3,6 +3,8 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 const webpack = require("webpack");
 
+const { resolve } = require;
+
 const TEMP_PATH = path.resolve(process.cwd(), ".atwo");
 
 function getTemplateContent(sketch) {
@@ -82,16 +84,21 @@ function getWebpackConfig(sketch, options = { mode: "dev" }) {
   return {
     entry: {
       editor: [
-        ...(isProduction ? [] : ["webpack-hot-middleware/client?reload=true"]),
+        ...(isProduction
+          ? []
+          : [`${resolve("webpack-hot-middleware/client")}?reload=true`]),
         path.resolve(stateFilePath),
         path.resolve(__dirname, "../editor/app.jsx"),
       ],
       [name]: [
-        ...(isProduction ? [] : ["webpack-hot-middleware/client?reload=true"]),
+        ...(isProduction
+          ? []
+          : [`${resolve("webpack-hot-middleware/client")}?reload=true`]),
         path.resolve(__dirname, "../editor/state.js"),
         path.resolve(frameworkFile),
       ],
     },
+    // TODO: test
     output: {
       publicPath: options.publicPath || "",
     },
@@ -115,12 +122,12 @@ function getWebpackConfig(sketch, options = { mode: "dev" }) {
           test: /\.(js|jsx)$/,
           exclude: /(node_modules)/,
           use: {
-            loader: "babel-loader",
+            loader: resolve("babel-loader"),
             options: {
               presets: [
-                "@babel/preset-react",
+                resolve("@babel/preset-react"),
                 [
-                  "@babel/preset-env",
+                  resolve("@babel/preset-env"),
                   {
                     targets: {
                       browsers: ["last 2 versions", "ie >= 11"],
@@ -129,10 +136,10 @@ function getWebpackConfig(sketch, options = { mode: "dev" }) {
                   },
                 ],
               ],
-              plugins: ["@babel/plugin-transform-runtime"],
+              plugins: [resolve("@babel/plugin-transform-runtime")],
               env: {
                 test: {
-                  presets: ["@babel/preset-env"],
+                  presets: [resolve("@babel/preset-env")],
                 },
               },
             },

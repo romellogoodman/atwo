@@ -73,7 +73,7 @@ function exportMiddleware(options) {
     const { input, seed, url: sketchUrl } = req.body;
     const url = `http://localhost:${port}${sketchUrl}`;
     const folderPath = path.join(process.cwd(), "output");
-    const exportFilename = `${sketch.filename}${
+    const exportFilename = `${sketch.name}${
       seed ? `-${seed}` : ""
     }.${exportType}`;
     const savePath = path.join(folderPath, exportFilename);

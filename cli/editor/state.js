@@ -23,6 +23,13 @@ export const qsObjectify = (search) => {
 
 const state = qsObjectify(window.location.search);
 
+if (state.width) {
+  state.width = parseInt(state.width, 10);
+}
+if (state.height) {
+  state.height = parseInt(state.height, 10);
+}
+
 console.log("state", state);
 
 window.STATE = state;

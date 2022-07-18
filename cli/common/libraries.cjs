@@ -91,7 +91,7 @@ const LIBRARIES = {
 
         svg.circle(state.width / 2, state.height / 2, smallerSide / 4, {
           fill: state.fill || "red",
-          stroke: "1px",
+          stroke: "black",
         });
 
         svg.draw();
