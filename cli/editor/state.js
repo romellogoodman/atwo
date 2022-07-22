@@ -23,12 +23,15 @@ export const qsObjectify = (search) => {
 
 const state = qsObjectify(window.location.search);
 
-if (state.width) {
-  state.width = parseInt(state.width, 10);
-}
-if (state.height) {
-  state.height = parseInt(state.height, 10);
-}
+const keys = Object.keys(state);
+
+keys.forEach((key) => {
+  const parsedValue = parseInt(state[key], 10);
+
+  if (!isNaN(parsedValue)) {
+    state[key] = parsedValue;
+  }
+});
 
 console.log("state", state);
 

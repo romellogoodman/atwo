@@ -10,13 +10,21 @@ function qsStringify(params) {
     .join("&");
 }
 
-function getPreviewUrl({ input, sketch, sketchSize }) {
-  const queryObj = { ...input, ...sketchSize };
-  const iframeUrl = `/${sketch?.meta?.name}.html?${qsStringify(queryObj)}`;
+function getUrls({ input, sketch, sketchSize }) {
+  const path = `/${sketch?.meta?.name}.html`;
+  const iframeUrl = `${path}?${qsStringify({
+    ...input,
+    ...sketchSize,
+  })}`;
+  const exportUrl = `${path}?${qsStringify({
+    ...input,
+    height: sketch.height,
+    width: sketch.width,
+  })}`;
 
   // console.log(`loading preview: ${iframeUrl}`);
 
-  return iframeUrl;
+  return { export: exportUrl, iframe: iframeUrl };
 }
 
 function useSketchSize(sketch) {
@@ -61,7 +69,7 @@ function Editor(props) {
   const sketch = getSketch();
   const sketchSize = useSketchSize(sketch);
   const { input, refreshState, updateInput } = useInput(sketch);
-  const iframeUrl = getPreviewUrl({ input, sketch, sketchSize });
+  const urls = getUrls({ input, sketch, sketchSize });
 
   if (!sketchSize.height || !sketchSize.width) {
     return null;
@@ -75,15 +83,15 @@ function Editor(props) {
             height={`${sketchSize.height}px`}
             width={`${sketchSize.width}px`}
             title={`atwo ${sketch?.name} sketch.`}
-            src={iframeUrl}
+            src={urls.iframe}
           />
         </div>
         <Controls
-          iframeUrl={iframeUrl}
           input={input}
           refreshState={refreshState}
           sketch={sketch}
           updateInput={updateInput}
+          urls={urls}
         />
       </main>
     </>

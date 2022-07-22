@@ -40,11 +40,16 @@ export function useInput(sketch) {
 }
 
 function Controls(props) {
-  const { iframeUrl, input, refreshState } = props;
+  const { input, refreshState, sketch, updateInput, urls } = props;
 
   const exportSketch = (type) => () => {
     const url = `/export/${type}`;
-    const body = { input, seed: input.seed, url: iframeUrl };
+    const _input = {
+      ...input,
+      height: sketch.height,
+      width: sketch.width,
+    };
+    const body = { input: _input, seed: input.seed, url: urls.export };
 
     post(url, body).then((data) => {
       console.log("data", data);

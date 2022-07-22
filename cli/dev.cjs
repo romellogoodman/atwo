@@ -52,7 +52,7 @@ function inputMiddleware(req, res) {
       const { max, min, value } = controlConfig;
 
       if (typeof max !== "undefined" && typeof min !== "undefined") {
-        result[key] = random.integer(min, max);
+        (result[key] = random.integer(min, max)), 10;
       } else {
         result[key] = value;
       }
@@ -82,6 +82,10 @@ function exportMiddleware(options) {
 
     console.log("open to", url);
 
+    await page.setViewport({
+      width: input.width,
+      height: input.height,
+    });
     await page.goto(url);
 
     if (!fs.existsSync(folderPath)) {
